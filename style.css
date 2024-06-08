@@ -1,10 +1,18 @@
+@font-face {
+    font-family: "Minecrafter"; 
+    src: url("fonts/MinecraftTen-VGORe.ttf");
+}
+
 body {
-  font-family: "Minecraft", sans-serif; /* Use a Minecraft font if you have one */
-  background-image: url("minecraft_background.jpg"); /* Replace with your background image */
+  font-family: "Minecrafter", sans-serif;
+  background-image: url("fonts/mmc.jpg");
   background-size: cover;
   color: white;
   text-align: center;
+  overflow: hidden;
+  height: 100vh; 
 }
+
 
 .container {
   display: flex;
@@ -23,7 +31,7 @@ h1 {
   display: inline-block;
   padding: 20px 40px;
   font-size: 1.5em;
-  background-color: #4CAF50; /* Green */
+  background-color: #4CAF50;
   color: white;
   text-decoration: none;
   border: none;
@@ -33,5 +41,26 @@ h1 {
 }
 
 .download-button:hover {
-  background-color: #3e8e41; /* Darker green on hover */
+  background-color: #3e8e41; 
 }
+
+.button-container {
+  display: flex;
+  justify-content: center; 
+  border: 5px solid white; 
+  padding: 20px; 
+  border-radius: 10px; 
+  background-color: rgba(200, 200, 255, 0.5); 
+}
+
+.download-button {
+  margin: 0 10px;
+}
+
+h1 {
+  margin-bottom: 10px;
+}
+.version-label{
+  margin-top: 20px;
+}
+
