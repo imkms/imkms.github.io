@@ -5,7 +5,7 @@
 
 body {
   font-family: "Minecrafter", sans-serif;
-  background-image: url("../fonts/mmc.jpg");
+  background-image: url("../fonts/who-created-the-legendary-steve-sitting-wallpaper-v0-d2dddl9xidl91.webp");
   background-size: cover;
   color: white;
   text-align: center;
@@ -60,7 +60,10 @@ h1 {
 h1 {
   margin-bottom: 10px;
 }
-.version-label{
-  margin-top: 20px;
-}
+.version-label { 
+      position: absolute; 
+      top: 2px; 
+      left: 10px; 
+      color: white
+    }
 
