@@ -21,7 +21,7 @@
             justify-content: center;
             margin-bottom: 20px;
         }
-        button {
+        a.button {
             margin: 10px;
             padding: 15px 30px;
             font-size: 16px;
@@ -30,20 +30,22 @@
             border-radius: 5px;
             background-color: #007BFF;
             color: white;
+            text-decoration: none;
+            display: inline-block;
             transition: background-color 0.3s;
         }
-        button:hover {
+        a.button:hover {
             background-color: #0056b3;
         }
     </style>
 </head>
 <body>
     <div class="button-row">
-        <button onclick="window.location.href='https://banyizotyi.hu/'">Zoli es banyi</button>
-        <button onclick="window.location.href='https://web.archive.org/web/20250604175009/https://banyizotyi.hu/'">Zoli es banyi Cached</button>
-        <button onclick="window.location.href='https://vizsgafizess.eu/'">martinek</button>
-        <button onclick="window.location.href='https://web.archive.org/web/20250604173643/https://vizsgafizess.eu/'">martinek Cached</button>
+        <a href="https://banyizotyi.hu/" target="_blank" class="button">Zoli es banyi</a>
+        <a href="https://web.archive.org/web/20250604175009/https://banyizotyi.hu/" target="_blank" class="button">Zoli es banyi Cached</a>
+        <a href="https://vizsgafizess.eu/" target="_blank" class="button">martinek</a>
+        <a href="https://web.archive.org/web/20250604173643/https://vizsgafizess.eu/" target="_blank" class="button">martinek Cached</a>
     </div>
-    <button onclick="window.location.href='https://imkms.github.io/banyizotyi_info/'">FORK of banyi zotyi</button>
+    <a href="https://imkms.github.io/banyizotyi_info/" target="_blank" class="button">FORK of banyi zotyi</a>
 </body>
 </html>
