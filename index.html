@@ -12,13 +12,13 @@
             --bg-color: #fdf6e3; --text-color: #073642; --accent-color: #cb4b16;
             --border-color: #586e75; --container-bg: #eee8d5; --button-shadow: #073642;
             --button-bg: var(--bg-color); --log-bg: #e0e0e0; --log-text: #000000;
-            --log-header: #b58900; --log-fix: #d90429; --log-add: #29b829; --log-note: #268bd2; --log-build: #2aa198; --log-dep: #6c71c4;
+            --log-header: #b58900; --log-fix: #d90429; --log-add: #29b829; --log-note: #268bd2; --log-build: #2aa198; --log-dep: #6c71c4; --log-revert: #ff8c00;
         }
         body.dark-mode { /* Dark Theme */
             --bg-color: #002b36; --text-color: #839496; --accent-color: #d33682;
             --border-color: #657b83; --container-bg: #073642; --button-shadow: #001f27;
             --button-bg: #084e61; --log-bg: #001f27; --log-text: #93a1a1;
-            --log-header: #b58900; --log-fix: #dc322f; --log-add: #859900; --log-note: #6c71c4; --log-build: #2aa198; --log-dep: #586e75;
+            --log-header: #b58900; --log-fix: #dc322f; --log-add: #859900; --log-note: #6c71c4; --log-build: #2aa198; --log-dep: #586e75; --log-revert: #cb4b16;
         }
         body { font-family: 'Press Start 2P', cursive; background-color: var(--bg-color); color: var(--text-color); display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; margin: 0; padding: 20px; box-sizing: border-box; }
         .theme-toggle { position: absolute; top: 20px; right: 20px; background: var(--container-bg); border: 2px solid var(--border-color); width: 50px; height: 50px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; }
@@ -29,7 +29,7 @@
         .version-log { background-color: var(--log-bg); color: var(--log-text); border: 2px solid var(--border-color); padding: 1rem; height: 150px; overflow-y: auto; text-align: left; font-size: 0.75rem; line-height: 1.6; border-radius: 4px; }
         .version-log h3 { color: var(--log-header); font-size: 0.85rem; margin: 0 0 0.5rem 0; }
         .version-log p { margin: 0; }
-        .version-log .log-fix { color: var(--log-fix); } .version-log .log-add { color: var(--log-add); } .version-log .log-note { color: var(--log-note); } .version-log .log-build { color: var(--log-build); } .version-log .log-dep { color: var(--log-dep); }
+        .version-log .log-fix { color: var(--log-fix); } .version-log .log-add { color: var(--log-add); } .version-log .log-note { color: var(--log-note); } .version-log .log-build { color: var(--log-build); } .version-log .log-dep { color: var(--log-dep); } .version-log .log-revert { color: var(--log-revert); }
         footer { margin-top: 2rem; font-size: 0.8rem; color: var(--border-color); }
     </style>
 </head>
@@ -42,9 +42,11 @@
             <a href="snake.html" class="game-button">🐍 Play Snake</a>
         </div>
         <div class="version-log">
-            <h3>v3.8 - Snake Customization & Polish</h3><p><span class="log-add">- ADD:</span> Pre-game option to choose a 'Boy' or 'Girl' snake with unique visual skins.</p><p><span class="log-add">- ADD:</span> A 2-second countdown sequence after starting a new game of Snake.</p><p><span class="log-note">- NOTE:</span> Blackjack build is now locked from further changes.</p>
-            <h3>v3.7 - System Override & Code Restoration</h3><p><span class="log-build">- BUILD:</span> Executed a system override to roll back Blackjack to a user-provided, known-good code version.</p><p><span class="log-note">- NOTE:</span> All generative logic for Blackjack is now bypassed in favor of a verbatim implementation.</p>
-            <h3>v3.6 - System Restoration Mandate</h3><p><span class="log-build">- BUILD:</span> Executed a full rollback of Blackjack to its stable "Build 1.0" state.</p><p><span class="log-dep">- DEPRECATED:</span> All Blackjack features from v3.3-v3.5 permanently deleted.</p>
+            <h3>v4.0 - Feature Re-integration & Completion</h3><p><span class="log-add">- ADD:</span> Re-integrated the 'Boy/Girl' snake customization feature.</p><p><span class="log-note">- STATUS:</span> Project considered complete and feature-locked.</p>
+            <h3>v3.9 - Snake Simplification & Mobile Controls</h3><p><span class="log-revert">- REVERT:</span> Rolled back Snake v3.8 features (skins, countdown).</p><p><span class="log-add">- ADD:</span> Implemented a clean, button-only mobile control scheme.</p>
+            <h3>v3.8 - Snake Customization & Polish</h3><p><span class="log-add">- ADD:</span> Pre-game option to choose snake skins.</p><p><span class="log-add">- ADD:</span> A 2-second countdown sequence for Snake.</p>
+            <h3>v3.7 - System Override & Code Restoration</h3><p><span class="log-build">- BUILD:</span> Executed a system override to roll back Blackjack.</p>
+            <h3>v3.6 - System Restoration Mandate</h3><p><span class="log-build">- BUILD:</span> Executed a full rollback of Blackjack to its stable "Build 1.0" state.</p>
             <h3>v3.5 - System Restore & Precision Patch</h3><p><span class="log-build">- BUILD:</span> Rolled back Blackjack to stable v3.3 codebase.</p>
             <h3>v3.4 - Critical Hotfix</h3><p><span class="log-fix">- FIX:</span> Repaired critical game-breaking bug in Blackjack.</p>
             <h3>v3.3 - Final Polish & Customization</h3><p><span class="log-add">- ADD:</span> Blackjack animation from visible deck.</p>
@@ -52,7 +54,7 @@
             <h3>v3.1 - Polish & Feature Complete</h3><p><span class="log-add">- ADD:</span> Player-defined betting system in Blackjack.</p>
         </div>
     </div>
-    <footer><p>Website Version 3.8</p></footer>
+    <footer><p>Website Version 4.0</p></footer>
     <script>
         const themeToggle = document.getElementById('theme-toggle');
         const body = document.body;
