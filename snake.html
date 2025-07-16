@@ -3,24 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Snake - Repaired</title>
+    <title>Snake - Customizable</title>
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
     <style>
-        :root { --bg-color: #333; --text-color: #f0f0f0; --board-bg: #111; --snake-head-color: #cfff70; --snake-body-color: #a5c347; --food-color: #e4572e; --border-color: #555; --ctrl-bg: #555; }
-        body.dark-mode { --bg-color: #002b36; --text-color: #93a1a1; --board-bg: #073642; --snake-head-color: #a0b61e; --snake-body-color: #859900; --food-color: #dc322f; --border-color: #586e75; --ctrl-bg: #084e61; }
+        :root { 
+            --bg-color: #333; --text-color: #f0f0f0; --board-bg: #111;
+            --snake-head-color: #cfff70; --snake-body-color: #a5c347;
+            --girl-snake-head-color: #ff77a8; --girl-snake-body-color: #c362a2; --girl-snake-bow-color: #89cff0;
+            --food-color: #e4572e; --border-color: #555; --ctrl-bg: #555; 
+        }
+        body.dark-mode { 
+            --bg-color: #002b36; --text-color: #93a1a1; --board-bg: #073642;
+            --snake-head-color: #a0b61e; --snake-body-color: #859900;
+            --girl-snake-head-color: #d33682; --girl-snake-body-color: #6c71c4; --girl-snake-bow-color: #2aa198;
+            --food-color: #dc322f; --border-color: #586e75; --ctrl-bg: #084e61; 
+        }
         body { font-family: 'Press-Start-2P', cursive; background-color: var(--bg-color); color: var(--text-color); display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; margin: 0; padding: 10px; box-sizing: border-box; overflow: hidden; }
         .game-wrapper { display: flex; flex-direction: column; align-items: center; width: 100%; position: relative; }
         .header { width: 100%; max-width: 500px; display: flex; justify-content: space-between; font-size: 1rem; margin-bottom: 1rem; padding: 0 10px; }
-        #game-board { background-color: var(--board-bg); border: 4px solid var(--border-color); box-shadow: inset 0 0 10px #000; }
-        .overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; background-color: rgba(0,0,0,0.5); }
-        .overlay h2 { font-size: 2rem; } .overlay p { font-size: 1rem; }
-        .overlay button { font-family: 'Press-Start-2P', cursive; font-size: 1rem; padding: 1rem 2rem; cursor: pointer; border: none; background-color: var(--snake-body-color); color: #000; }
+        #game-board { border: 4px solid var(--border-color); box-shadow: inset 0 0 10px #000; display: none; }
+        .overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; background-color: rgba(0,0,0,0.7); padding: 1rem; }
+        #countdown-display { font-size: 5rem; text-shadow: 4px 4px #000; background-color: transparent; }
+        .overlay h2 { font-size: 1.5rem; margin-bottom: 1rem; }
+        .overlay p { font-size: 1rem; margin-bottom: 0.5rem; }
+        .overlay button { font-family: 'Press-Start-2P', cursive; font-size: 1rem; padding: 1rem 2rem; cursor: pointer; border: none; background-color: var(--snake-body-color); color: #000; margin-top: 1.5rem; }
+        .config-section { margin-bottom: 1rem; width: 100%; }
+        .config-options { display: flex; gap: 15px; flex-wrap: wrap; justify-content: center; font-size: 0.8rem; }
         .hidden { display: none; }
         .mobile-controls { display: none; margin-top: 20px; width: 200px; height: 200px; position: relative; }
-        .ctrl-btn { position: absolute; width: 60px; height: 60px; background: var(--ctrl-bg); color: white; border: 2px solid var(--border-color); border-radius: 10px; font-size: 1.5rem; user-select: none; display: flex; align-items: center; justify-content: center; }
-        @media (max-width: 768px) and (orientation: portrait), (hover: none) and (pointer: coarse) { .mobile-controls { display: block; } }
-        #up-btn { top: 0; left: 50%; transform: translateX(-50%); } #down-btn { bottom: 0; left: 50%; transform: translateX(-50%); }
-        #left-btn { left: 0; top: 50%; transform: translateY(-50%); } #right-btn { right: 0; top: 50%; transform: translateY(-50%); }
+        .ctrl-btn { position: absolute; width: 60px; height: 60px; background: var(--ctrl-bg); color: white; border-radius: 10px; font-size: 1.5rem; user-select: none; display: flex; align-items: center; justify-content: center; }
         .footer-nav { position: fixed; bottom: 10px; left: 10px; right: 10px; display: flex; justify-content: space-between; font-size: 0.7rem; }
         .back-btn { color: var(--text-color); text-decoration: none; padding: 0.5rem; }
     </style>
@@ -32,15 +43,38 @@
             <span>High Score: <span id="high-score">0</span></span>
         </div>
         <canvas id="game-board"></canvas>
-        <div id="start-screen" class="overlay">
-            <h2>SNAKE</h2>
-            <p>Use WASD or Arrow Keys</p>
-            <button id="start-btn">Start Game</button>
+        <div id="countdown-display" class="overlay hidden"></div>
+        <div id="config-screen" class="overlay">
+            <h2>SETTINGS</h2>
+            <div class="config-section">
+                <p>Choose Your Snake:</p>
+                <div class="config-options">
+                    <label><input type="radio" name="snake-style" value="boy" checked> Boy Snake</label>
+                    <label><input type="radio" name="snake-style" value="girl"> Girl Snake</label>
+                </div>
+            </div>
+            <div class="config-section">
+                <p>Apples on Screen:</p>
+                <div class="config-options">
+                    <label><input type="radio" name="apple-count" value="1" checked> 1</label>
+                    <label><input type="radio" name="apple-count" value="2"> 2</label>
+                    <label><input type="radio" name="apple-count" value="3"> 3</label>
+                </div>
+            </div>
+            <div class="config-section">
+                <p>Food Style:</p>
+                <div class="config-options">
+                    <label><input type="radio" name="food-style" value="🍎" checked> 🍎</label>
+                    <label><input type="radio" name="food-style" value="🍍"> 🍍</label>
+                    <label><input type="radio" name="food-style" value="🍌"> 🍌</label>
+                </div>
+            </div>
+            <button id="start-game-btn">Start Game</button>
         </div>
         <div id="game-over-screen" class="overlay hidden">
             <h2>GAME OVER</h2>
             <p>Final Score: <span id="final-score">0</span></p>
-            <button id="play-again-btn">Play Again</button>
+            <button id="play-again-btn">New Game</button>
         </div>
         <div class="mobile-controls">
             <div class="ctrl-btn" id="up-btn">▲</div> <div class="ctrl-btn" id="down-btn">▼</div>
@@ -49,90 +83,139 @@
     </div>
     <div class="footer-nav">
         <a href="index.html" class="back-btn">← Back to Arcade</a>
-        <span>Snake v3.0</span>
+        <span>Snake v3.8</span>
     </div>
     <script>
         const canvas = document.getElementById('game-board'), ctx = canvas.getContext('2d');
         const scoreEl = document.getElementById('score'), highScoreEl = document.getElementById('high-score');
-        const startScreen = document.getElementById('start-screen'), gameOverScreen = document.getElementById('game-over-screen');
-        const finalScoreEl = document.getElementById('final-score'), startBtn = document.getElementById('start-btn'), playAgainBtn = document.getElementById('play-again-btn');
+        const configScreen = document.getElementById('config-screen'), gameOverScreen = document.getElementById('game-over-screen');
+        const countdownDisplay = document.getElementById('countdown-display');
+        const finalScoreEl = document.getElementById('final-score'), startGameBtn = document.getElementById('start-game-btn'), playAgainBtn = document.getElementById('play-again-btn');
 
         const gridSize = 20;
         let canvasSize = Math.min(window.innerWidth - 40, window.innerHeight * 0.5, 500);
         canvas.width = canvas.height = Math.floor(canvasSize / gridSize) * gridSize;
         
-        let gameState = 'PRE-GAME';
-        let snake, food, currentDirection, nextDirection, score, gameLoop;
+        const SKINS = {
+            boy: { head: '--snake-head-color', body: '--snake-body-color' },
+            girl: { head: '--girl-snake-head-color', body: '--girl-snake-body-color', accessory: '--girl-snake-bow-color' }
+        };
+        const gameState = { snake: [], food: [], direction: {}, nextDirection: {}, score: 0, status: 'PRE-GAME', maxApples: 1, foodEmoji: '🍎', snakeStyle: 'boy', gameLoop: null };
         let highScore = localStorage.getItem('snakeHighScore') || 0;
         highScoreEl.textContent = highScore;
-
-        function getThemeColor(name) { return getComputedStyle(document.documentElement).getPropertyValue(name); }
         
-        // SURGICAL HOTFIX: This function now follows the mandatory initialization sequence.
-        function startGame() {
-            // 1. Reset State
-            if(gameLoop) clearInterval(gameLoop);
-            score = 0;
-            scoreEl.textContent = 0;
-            
-            // 2. Initialize Snake
-            snake = [{ x: 10, y: 10 }]; // Safe starting position
+        function getThemeColor(name) { return getComputedStyle(document.documentElement).getPropertyValue(name); }
 
-            // 3. Set Initial Direction (CRITICAL STEP)
-            currentDirection = { x: 1, y: 0 }; // Default to 'RIGHT'
-            nextDirection = { x: 1, y: 0 };
-            
-            // 4. Clear Board
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            
-            // 5. Place Food
-            spawnFood();
-            
-            // 6. Set Game State
-            gameState = 'PLAYING';
-            startScreen.classList.add('hidden');
+        function initiateCountdown() {
+            // 1. Read selections
+            gameState.maxApples = parseInt(document.querySelector('input[name="apple-count"]:checked').value);
+            gameState.foodEmoji = document.querySelector('input[name="food-style"]:checked').value;
+            gameState.snakeStyle = document.querySelector('input[name="snake-style"]:checked').value;
+
+            // 2. Toggle UI
+            configScreen.classList.add('hidden');
             gameOverScreen.classList.add('hidden');
+            canvas.style.display = 'block';
             
-            // 7. Start Game Loop (LAST)
-            gameLoop = setInterval(tick, 100);
+            // Initialize game state for drawing, but don't start moving
+            gameState.score = 0; scoreEl.textContent = 0;
+            gameState.snake = [{ x: 10, y: 10 }];
+            gameState.direction = { x: 1, y: 0 }; gameState.nextDirection = { x: 1, y: 0 };
+            gameState.food = [];
+            manageFood();
+            draw(); // Draw the initial board state
+
+            // 3. Start countdown
+            gameState.status = 'COUNTDOWN';
+            countdownDisplay.classList.remove('hidden');
+            countdownDisplay.textContent = '2';
+
+            setTimeout(() => {
+                countdownDisplay.textContent = '1';
+                setTimeout(() => {
+                    countdownDisplay.classList.add('hidden');
+                    gameState.status = 'PLAYING';
+                    if (gameState.gameLoop) clearInterval(gameState.gameLoop);
+                    gameState.gameLoop = setInterval(tick, 100);
+                }, 1000);
+            }, 1000);
         }
 
-        function spawnFood() {
-            food = { x: Math.floor(Math.random() * (canvas.width / gridSize)), y: Math.floor(Math.random() * (canvas.height / gridSize)) };
-            if (snake.some(segment => segment.x === food.x && segment.y === food.y)) spawnFood();
+        function manageFood() {
+            while (gameState.food.length < gameState.maxApples) {
+                let newFood = { x: Math.floor(Math.random() * (canvas.width / gridSize)), y: Math.floor(Math.random() * (canvas.height / gridSize)) };
+                const onSnake = gameState.snake.some(s => s.x === newFood.x && s.y === newFood.y);
+                const onFood = gameState.food.some(f => f.x === newFood.x && f.y === newFood.y);
+                if (!onSnake && !onFood) gameState.food.push(newFood);
+            }
         }
         
         function tick() {
-            if (gameState !== 'PLAYING') return;
-            const isOpposite = (d1, d2) => d1.x === -d2.x && d1.y === 0 || d1.y === -d2.y && d1.x === 0;
-            if (!isOpposite(nextDirection, currentDirection)) { currentDirection = { ...nextDirection }; }
-            const head = { x: snake[0].x + currentDirection.x, y: snake[0].y + currentDirection.y };
-            snake.unshift(head);
-            const wallCollision = head.x < 0 || head.x >= canvas.width / gridSize || head.y < 0 || head.y >= canvas.height / gridSize;
-            const selfCollision = snake.slice(1).some(segment => segment.x === head.x && segment.y === head.y);
+            if (gameState.status !== 'PLAYING') return;
+            const isOpposite = (d1, d2) => d1.x === -d2.x && d1.x !== 0 || d1.y === -d2.y && d1.y !== 0;
+            if (!isOpposite(gameState.nextDirection, gameState.direction)) gameState.direction = { ...gameState.nextDirection };
+            const head = { x: gameState.snake[0].x + gameState.direction.x, y: gameState.snake[0].y + gameState.direction.y };
+            gameState.snake.unshift(head);
+            
+            const wallCollision = head.x < 0 || head.x >= canvas.width/gridSize || head.y < 0 || head.y >= canvas.height/gridSize;
+            const selfCollision = gameState.snake.slice(1).some(s => s.x === head.x && s.y === head.y);
             if (wallCollision || selfCollision) {
-                gameState = 'GAME-OVER';
-                clearInterval(gameLoop);
-                finalScoreEl.textContent = score;
-                gameOverScreen.classList.remove('hidden');
-                return;
+                gameState.status = 'GAME-OVER'; clearInterval(gameState.gameLoop);
+                finalScoreEl.textContent = gameState.score;
+                gameOverScreen.classList.remove('hidden'); canvas.style.display = 'none'; return;
             }
-            if (head.x === food.x && head.y === food.y) {
-                score++;
-                scoreEl.textContent = score;
-                if (score > highScore) { highScore = score; highScoreEl.textContent = highScore; localStorage.setItem('snakeHighScore', highScore); }
-                spawnFood();
-            } else { snake.pop(); }
+
+            let ateFood = false;
+            gameState.food.forEach((foodItem, index) => {
+                if (head.x === foodItem.x && head.y === foodItem.y) {
+                    ateFood = true; gameState.food.splice(index, 1);
+                    gameState.score++; scoreEl.textContent = gameState.score;
+                    if (gameState.score > highScore) { highScore = gameState.score; highScoreEl.textContent = highScore; localStorage.setItem('snakeHighScore', highScore); }
+                }
+            });
+            if (ateFood) manageFood(); else gameState.snake.pop();
             draw();
         }
         
         function draw() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = getThemeColor('--food-color');
-            ctx.fillRect(food.x * gridSize, food.y * gridSize, gridSize, gridSize);
-            snake.forEach((segment, index) => {
-                ctx.fillStyle = index === 0 ? getThemeColor('--snake-head-color') : getThemeColor('--snake-body-color');
+            ctx.font = `${gridSize * 0.9}px "Press Start 2P"`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+            gameState.food.forEach(foodItem => {
+                ctx.fillText(gameState.foodEmoji, foodItem.x * gridSize + gridSize / 2, foodItem.y * gridSize + gridSize / 2);
+            });
+            
+            const currentSkin = SKINS[gameState.snakeStyle];
+            gameState.snake.forEach((segment, index) => {
+                ctx.fillStyle = getThemeColor(index === 0 ? currentSkin.head : currentSkin.body);
                 ctx.fillRect(segment.x * gridSize, segment.y * gridSize, gridSize - 1, gridSize - 1);
+                
+                if (index === 0) { // Distinct Head
+                    ctx.fillStyle = '#000';
+                    const eyeSize = gridSize / 5;
+                    const dir = gameState.direction;
+                    const eye1 = {x: 0, y: 0}, eye2 = {x: 0, y: 0};
+                    if (dir.x === 1) { // Right
+                        eye1.x = segment.x*gridSize + gridSize*0.6; eye1.y = segment.y*gridSize + gridSize*0.2;
+                        eye2.x = segment.x*gridSize + gridSize*0.6; eye2.y = segment.y*gridSize + gridSize*0.6;
+                    } else if (dir.x === -1) { // Left
+                        eye1.x = segment.x*gridSize + gridSize*0.2; eye1.y = segment.y*gridSize + gridSize*0.2;
+                        eye2.x = segment.x*gridSize + gridSize*0.2; eye2.y = segment.y*gridSize + gridSize*0.6;
+                    } else if (dir.y === 1) { // Down
+                        eye1.x = segment.x*gridSize + gridSize*0.2; eye1.y = segment.y*gridSize + gridSize*0.6;
+                        eye2.x = segment.x*gridSize + gridSize*0.6; eye2.y = segment.y*gridSize + gridSize*0.6;
+                    } else { // Up
+                        eye1.x = segment.x*gridSize + gridSize*0.2; eye1.y = segment.y*gridSize + gridSize*0.2;
+                        eye2.x = segment.x*gridSize + gridSize*0.6; eye2.y = segment.y*gridSize + gridSize*0.2;
+                    }
+                    ctx.fillRect(eye1.x, eye1.y, eyeSize, eyeSize);
+                    ctx.fillRect(eye2.x, eye2.y, eyeSize, eyeSize);
+
+                    if (gameState.snakeStyle === 'girl') { // Girl Accessory
+                        ctx.fillStyle = getThemeColor(currentSkin.accessory);
+                        const bowSize = gridSize / 3;
+                        ctx.fillRect(eye1.x - bowSize / 2, eye1.y - bowSize, bowSize, bowSize);
+                    }
+                }
             });
         }
 
@@ -145,19 +228,12 @@
                 case 'd': case 'arrowright': newDir = { x: 1, y: 0 }; break;
                 default: return;
             }
-            nextDirection = newDir;
+            if(gameState.status === 'PLAYING') gameState.nextDirection = newDir;
         }
 
         window.addEventListener('keydown', handleKeyPress);
-        startBtn.addEventListener('click', startGame);
-        playAgainBtn.addEventListener('click', startGame);
-        document.getElementById('up-btn').addEventListener('click', () => handleKeyPress({key: 'w'}));
-        document.getElementById('down-btn').addEventListener('click', () => handleKeyPress({key: 's'}));
-        document.getElementById('left-btn').addEventListener('click', () => handleKeyPress({key: 'a'}));
-        document.getElementById('right-btn').addEventListener('click', () => handleKeyPress({key: 'd'}));
-
-        spawnFood(); // Initial draw for pre-game screen
-        draw();
+        startGameBtn.addEventListener('click', initiateCountdown);
+        playAgainBtn.addEventListener('click', () => { configScreen.classList.remove('hidden'); gameOverScreen.classList.add('hidden'); });
     </script>
 </body>
 </html>

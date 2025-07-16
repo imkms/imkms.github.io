@@ -3,50 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Blackjack - CRT Rebuild</title>
+    <title>Blackjack - Known Good Build</title>
     <link rel="stylesheet" href="blackjack.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div id="crt-overlay"></div>
-    <div id="game-container">
+    <div id="crt-overlay"></div><div id="game-container">
         <header>
-            <h1>> BLACKJACK_</h1>
-            <a href="index.html" class="back-btn">RETURN TO ARCADE</a>
-        </header>
-        <div id="game-table">
-            <div id="dealer-area" class="area">
-                <h2>DEALER</h2>
-                <div id="dealer-hand" class="hand-container"></div>
-                <p>SCORE: <span id="dealer-score">0</span></p>
+            <div>
+                <h1>Blackjack</h1>
+                <span class="version-text">v1.1</span>
             </div>
-            <div id="player-area" class="area">
-                <h2>PLAYER</h2>
+            <a href="index.html" class="back-btn">&lt; Back to Arcade</a>
+        </header>
+    
+        <div id="game-table">
+            <div class="area" id="dealer-area">
+                <div class="player-header">
+                    <h2>Dealer</h2>
+                    <p>Score: <span id="dealer-score">0</span></p>
+                </div>
+                <div id="dealer-hand" class="hand-container"></div>
+            </div>
+            <div class="area" id="player-area">
+                <div class="player-header">
+                    <h2>Player</h2>
+                    <p>Score: <span id="player-score">0</span></p>
+                </div>
                 <div id="player-hand" class="hand-container"></div>
-                <p>SCORE: <span id="player-score">0</span></p>
             </div>
         </div>
+    
         <div id="ui-area">
-             <div id="game-messages">> INITIALIZING...</div>
-             <div id="ui-controls">
-                <div id="bet-controls">
-                    <button class="btn" data-bet="10">BET 10</button>
-                    <button class="btn" data-bet="25">BET 25</button>
-                    <button class="btn" data-bet="50">BET 50</button>
+            <div id="game-messages">> PLACE YOUR BET TO START</div>
+            <div id="ui-controls">
+                <div id="betting-controls">
+                    <input type="number" id="bet-amount" value="10">
+                    <button id="place-bet-btn" class="btn">Place Bet</button>
                 </div>
                 <div id="action-controls" class="hidden">
-                    <button class="btn" id="hit-btn">HIT</button>
-                    <button class="btn" id="stand-btn">STAND</button>
-                    <button class="btn" id="double-down-btn">DOUBLE</button>
+                    <button id="hit-btn" class="btn">Hit</button>
+                    <button id="stand-btn" class="btn">Stand</button>
+                    <button id="double-down-btn" class="btn">Double Down</button>
                 </div>
             </div>
-             <div id="wallet-info">
-                WALLET: <span id="player-wallet">1000</span> | CURRENT BET: <span id="current-bet">0</span>
-             </div>
-        </div>
-    </div>
+            <div id="bet-info">
+                <p>Balance: <span id="player-balance">100</span> | Current Bet: <span id="current-bet">0</span></p>
+            </div>
+        </div></div>
     <script src="blackjack.js" defer></script>
 </body>
 </html>
