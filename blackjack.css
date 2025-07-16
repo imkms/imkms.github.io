@@ -1,0 +1,94 @@
+/* "Green Phosphor CRT" Design Specification */
+:root {
+    --main-bg: #0a0a0a;
+    --primary-color: #39FF14;
+    --highlight-color: #d1ffca;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+    background-color: var(--main-bg);
+    color: var(--primary-color);
+    font-family: 'Press Start 2P', 'Courier New', monospace;
+    text-transform: uppercase;
+    text-shadow: 0 0 5px var(--primary-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+}
+#crt-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    background: repeating-linear-gradient(rgba(0,0,0,0.3) 0, rgba(0,0,0,0.3) 1px, transparent 1px, transparent 3px);
+    z-index: 9999;
+}
+#game-container {
+    width: 100%;
+    max-width: 900px;
+    border: 2px solid var(--primary-color);
+    padding: 2rem;
+    background: rgba(10, 30, 10, 0.1);
+}
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid var(--primary-color);
+    padding-bottom: 1rem;
+    margin-bottom: 1rem;
+}
+.back-btn { color: var(--primary-color); text-decoration: none; font-size: 0.8rem; }
+#game-table {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    margin-bottom: 2rem;
+}
+.area h2 { margin-bottom: 1rem; font-size: 1.2rem; }
+.hand-container {
+    display: flex;
+    gap: 1rem;
+    min-height: 100px;
+    flex-wrap: wrap;
+}
+.card {
+    border: 2px solid var(--primary-color);
+    width: 70px;
+    height: 95px;
+    padding: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+}
+.card.face-down {
+    background: repeating-linear-gradient(45deg, var(--primary-color), var(--primary-color) 2px, transparent 2px, transparent 4px);
+}
+#ui-area { border-top: 2px solid var(--primary-color); padding-top: 1rem; }
+#game-messages { min-height: 2.5em; margin-bottom: 1rem; font-size: 1.1rem; color: var(--highlight-color); }
+#ui-controls { display: flex; justify-content: center; gap: 1rem; margin-bottom: 1rem; }
+.btn {
+    font-family: 'Press Start 2P', monospace;
+    background: transparent;
+    border: 2px solid var(--primary-color);
+    color: var(--primary-color);
+    padding: 0.8rem 1.2rem;
+    cursor: pointer;
+    text-shadow: 0 0 5px var(--primary-color);
+}
+.btn:hover:not(:disabled) { background-color: var(--primary-color); color: var(--main-bg); text-shadow: none; }
+.btn:disabled { color: #2a6320; border-color: #2a6320; text-shadow: none; cursor: not-allowed; }
+#wallet-info { text-align: center; color: var(--highlight-color); font-size: 0.9rem; }
+.hidden { display: none !important; }
+
+@media (max-width: 768px) {
+    #game-container { padding: 1rem; }
+    h1 { font-size: 1rem; }
+    .btn { padding: 0.6rem 0.8rem; font-size: 0.8rem; }
+    .card { width: 60px; height: 85px; font-size: 1.2rem; }
+}
