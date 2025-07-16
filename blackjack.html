@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Retro Blackjack</title>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <style>
+    /* Retro aesthetic with neon palette and pixelated style */
+    body {
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background: #1a1a1a;
+      font-family: 'Press Start 2P', monospace;
+      color: #00ff00; /* Neon green text */
+      overflow: auto;
+      background-image: linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+                        linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+      background-size: 20px 20px; /* Pixelated grid background */
+    }
+
+    .container {
+      text-align: center;
+      max-width: 90%;
+      width: 800px;
+      padding: 20px;
+      position: relative;
+      border: 4px solid #ff00ff; /* Neon magenta border */
+      box-shadow: 0 0 15px #ff00ff, 0 0 30px #00ff00; /* Neon glow */
+    }
+
+    .game-table {
+      background: #006400; /* Dark green felt */
+      border: 4px solid #ff4500; /* Neon orange border */
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: inset 0 0 10px rgba(0, 255, 0, 0.3);
+      position: relative;
+      min-height: 400px;
+    }
+
+    .start-screen, .game-over-screen {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.85);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 10;
+      color: #ffff00; /* Neon yellow */
+      text-shadow: 0 0 5px #ff00ff;
+    }
+
+    .card {
+      display: inline-block;
+      width: 60px;
+      height: 90px;
+      background: #000; /* Black card background */
+      border: 2px solid #ff4500; /* Neon orange border */
+      border-radius: 5px;
+      margin: 5px;
+      font-size: 14px;
+      line-height: 90px;
+      text-align: center;
+      position: relative;
+      transition: transform 0.3s ease, opacity 0.3s ease;
+      box-shadow: 0 0 8px #00ff00; /* Neon green glow */
+      font-family: 'Press Start 2P', monospace;
+      color: #fff; /* White for readability */
+      background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAAXNSR0IArs4c6QAAAB9JREFUKFNjZICC/////z8DAwMDI/7//z8DAwMDAwC9AAkY3J0v+wAAAABJRU5ErkJggg=='); /* Pixelated pattern */
+    }
+
+    .card.spades, .card.clubs {
+      color: #00ff00; /* Neon green for spades/clubs */
+    }
+
+    .card.hearts, .card.diamonds {
+      color: #ff4500; /* Neon orange for hearts/diamonds */
+    }
+
+    .card.hidden {
+      background: #b71c1c; /* Red for hidden card */
+      color: transparent;
+      box-shadow: 0 0 8px #ff4500;
+      background-image: none;
+    }
+
+    .hand {
+      margin: 20px 0;
+    }
+
+    .controls, .betting {
+      margin: 20px 0;
+    }
+
+    button {
+      background: #ff00ff; /* Neon magenta */
+      border: 2px solid #00ff00; /* Neon green border */
+      padding: 12px 24px;
+      margin: 8px;
+      cursor: pointer;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 14px;
+      color: #000;
+      border-radius: 5px;
+      transition: transform 0.2s, box-shadow 0.2s;
+      touch-action: manipulation;
+      min-width: 80px; /* Touch-friendly size */
+    }
+
+    button:hover, button:active {
+      transform: scale(1.1);
+      box-shadow: 0 0 10px #00ff00;
+    }
+
+    button:disabled {
+      background: #444;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    .status {
+      font-size: 20px;
+      margin: 20px 0;
+      text-shadow: 0 0 5px #ff4500;
+      animation: glow 1.5s ease-in-out infinite alternate;
+    }
+
+    .chip-display {
+      font-size: 16px;
+      margin: 10px 0;
+      text-shadow: 0 0 5px #ffff00;
+    }
+
+    .version-history {
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+      font-size: 12px;
+      color: #ffff00; /* Neon yellow */
+      text-shadow: 0 0 5px #ff00ff;
+      z-index: 5;
+    }
+
+    @keyframes glow {
+      from { text-shadow: 0 0 5px #ff4500, 0 0 10px #ff4500; }
+      to { text-shadow: 0 0 10px #ff4500, 0 0 15px #ff4500; }
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        width: 95%;
+        padding: 10px;
+      }
+
+      .card {
+        width: 50px;
+        height: 75px;
+        font-size: 12px;
+        line-height: 75px;
+      }
+
+      button {
+        padding: 10px 20px;
+        font-size: 12px;
+        min-width: 70px;
+      }
+
+      .status {
+        font-size: 16px;
+      }
+
+      .chip-display {
+        font-size: 14px;
+      }
+
+      .version-history {
+        font-size: 10px;
+        bottom: 5px;
+        right: 5px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Retro Blackjack</h1>
+    <div class="chip-display">Chips: <span id="chips">1000</span> | High Score: <span id="high-score">1000</span></div>
+    <div class="game-table">
+      <div class="start-screen" id="start-screen">
+        <h2>Welcome to Retro Blackjack</h2>
+        <p>Rules: Get as close to 21 without going over. Aces are 1 or 11, face cards are 10. Dealer hits on 16 or less, stands on 17 or more.</p>
+        <p>On mobile, tap buttons to perform actions.</p>
+        <button id="start-button" aria-label="Start Game">Play</button>
+      </div>
+      <div class="game-over-screen" id="game-over-screen" style="display: none;">
+        <h2>Game Over</h2>
+        <p>You've run out of chips!</p>
+        <button id="restart-button" aria-label="Restart Game">Restart</button>
+      </div>
+      <div class="betting" id="betting" style="display: none;">
+        <p>Place your bet:</p>
+        <button class="bet-button" data-amount="10" aria-label="Bet 10 chips">10</button>
+        <button class="bet-button" data-amount="50" aria-label="Bet 50 chips">50</button>
+        <button class="bet-button" data-amount="100" aria-label="Bet 100 chips">100</button>
+      </div>
+      <div class="status" id="status"></div>
+      <div class="hand" id="dealer-hand" aria-label="Dealer's Hand"></div>
+      <div class="hand" id="player-hand" aria-label="Player's Hand"></div>
+      <div class="controls" id="controls" style="display: none;">
+        <button id="hit-button" disabled aria-label="Hit">Hit</button>
+        <button id="stand-button" disabled aria-label="Stand">Stand</button>
+        <button id="double-button" disabled aria-label="Double Down">Double Down</button>
+        <button id="split-button" disabled aria-label="Split">Split</button>
+      </div>
+      <!-- Version history display -->
+      <div class="version-history" id="version-history">Version 0.1</div>
+    </div>
+    <p><a href="index.html" aria-label="Back to Game Selector">Back to Menu</a></p>
+  </div>
+
+  <script>
+    // Card and Deck Management
+    const suits = ['spades', 'clubs', 'hearts', 'diamonds'];
+    const values = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
+    const suitSymbols = { spades: '♠', clubs: '♣', hearts: '♥', diamonds: '♦' };
+    let deck = [];
+    let playerHand = [];
+    let dealerHand = [];
+    let splitHand = null;
+    let chips = 1000;
+    let highScore = parseInt(localStorage.getItem('blackjackHighScore')) || 1000;
+    let currentBet = 0;
+    let gameState = 'betting';
+    let isSplit = false;
+    let lastClickTime = 0;
+    const clickDelay = 300; // Debounce delay in ms for touch/click
+
+    // Initialize elements
+    const startScreen = document.getElementById('start-screen');
+    const gameOverScreen = document.getElementById('game-over-screen');
+    const betting = document.getElementById('betting');
+    const controls = document.getElementById('controls');
+    const status = document.getElementById('status');
+    const dealerHandDiv = document.getElementById('dealer-hand');
+    const playerHandDiv = document.getElementById('player-hand');
+    const chipsDisplay = document.getElementById('chips');
+    const highScoreDisplay = document.getElementById('high-score');
+    const startButton = document.getElementById('start-button');
+    const restartButton = document.getElementById('restart-button');
+    const hitButton = document.getElementById('hit-button');
+    const standButton = document.getElementById('stand-button');
+    const doubleButton = document.getElementById('double-button');
+    const splitButton = document.getElementById('split-button');
+    const betButtons = document.querySelectorAll('.bet-button');
+
+    // Initialize game
+    updateChipsDisplay();
+    highScoreDisplay.textContent = highScore;
+
+    // Create and shuffle deck
+    function createDeck() {
+      deck = [];
+      for (let suit of suits) {
+        for (let value of values) {
+          deck.push({ suit, value });
+        }
+      }
+      shuffleDeck();
+    }
+
+    // Fisher-Yates shuffle
+    function shuffleDeck() {
+      for (let i = deck.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [deck[i], deck[j]] = [deck[j], deck[i]];
+      }
+    }
+
+    // Calculate hand value
+    function getHandValue(hand) {
+      let value = 0;
+      let aces = 0;
+      for (let card of hand) {
+        if (card.value === 'A') {
+          aces++;
+          value += 11;
+        } else if (['J', 'Q', 'K'].includes(card.value)) {
+          value += 10;
+        } else {
+          value += parseInt(card.value);
+        }
+      }
+      while (value > 21 && aces > 0) {
+        value -= 10;
+        aces--;
+      }
+      return value;
+    }
+
+    // Render a hand with retro animation
+    function renderHand(hand, element, hideSecond = false) {
+      element.innerHTML = '';
+      hand.forEach((card, index) => {
+        const cardDiv = document.createElement('div');
+        cardDiv.className = `card ${card.suit}`;
+        if (hideSecond && index === 1) {
+          cardDiv.className = 'card hidden';
+          cardDiv.setAttribute('aria-label', 'Hidden dealer card');
+        } else {
+          cardDiv.textContent = `${card.value}${suitSymbols[card.suit]}`;
+          cardDiv.setAttribute('aria-label', `${card.value} of ${card.suit}`);
+        }
+        // Retro slide-in animation
+        cardDiv.style.transform = 'translateX(-50px)';
+        cardDiv.style.opacity = '0';
+        setTimeout(() => {
+          cardDiv.style.transform = 'translateX(0)';
+          cardDiv.style.opacity = '1';
+        }, index * 100);
+        element.appendChild(cardDiv);
+      });
+    }
+
+    // Update chips and high score
+    function updateChipsDisplay() {
+      chipsDisplay.textContent = chips;
+      if (chips > highScore) {
+        highScore = chips;
+        localStorage.setItem('blackjackHighScore', highScore);
+        highScoreDisplay.textContent = highScore;
+      }
+    }
+
+    // Check if double down is allowed
+    function canDoubleDown() {
+      return playerHand.length === 2 && chips >= currentBet && !isSplit;
+    }
+
+    // Check if split is allowed
+    function canSplit() {
+      if (playerHand.length !== 2) return false;
+      const value1 = playerHand[0].value;
+      const value2 = playerHand[1].value;
+      return value1 === value2 && chips >= currentBet;
+    }
+
+    // Update button states
+    function updateButtonStates() {
+      hitButton.disabled = gameState !== 'playing';
+      standButton.disabled = gameState !== 'playing';
+      doubleButton.disabled = gameState !== 'playing' || !canDoubleDown();
+      splitButton.disabled = gameState !== 'playing' || !canSplit();
+    }
+
+    // Start a new round
+    function startRound(bet) {
+      if (chips < bet || isNaN(bet)) {
+        status.textContent = 'Invalid bet!';
+        return;
+      }
+      currentBet = bet;
+      chips -= bet;
+      updateChipsDisplay();
+      gameState = 'playing';
+      startScreen.style.display = 'none';
+      betting.style.display = 'none';
+      controls.style.display = 'block';
+      createDeck();
+      playerHand = [deck.pop(), deck.pop()];
+      dealerHand = [deck.pop(), deck.pop()];
+      renderHand(playerHand, playerHandDiv);
+      renderHand(dealerHand, dealerHandDiv, true);
+      updateButtonStates();
+      checkPlayerHand();
+    }
+
+    // Check player hand for immediate outcomes
+    function checkPlayerHand() {
+      const playerValue = getHandValue(playerHand);
+      status.textContent = `Your hand: ${playerValue}`;
+      if (playerValue === 21 && playerHand.length === 2) {
+        endRound('Blackjack! You win!', 2.5 * currentBet);
+      } else if (playerValue > 21) {
+        endRound('Bust! You lose.', -currentBet);
+      }
+    }
+
+    // End the round with retro status animation
+    function endRound(message, chipChange) {
+      chips += chipChange;
+      updateChipsDisplay();
+      gameState = 'ended';
+      renderHand(dealerHand, dealerHandDiv, false);
+      status.textContent = message;
+      status.style.animation = 'glow 1.5s ease-in-out infinite alternate';
+      controls.style.display = 'none';
+      betting.style.display = 'block';
+      if (chips <= 0) {
+        gameOverScreen.style.display = 'flex';
+      }
+      updateButtonStates();
+    }
+
+    // Dealer turn logic with delayed card reveal
+    function dealerTurn() {
+      renderHand(dealerHand, dealerHandDiv, false);
+      let dealerValue = getHandValue(dealerHand);
+      function playDealer() {
+        dealerValue = getHandValue(dealerHand);
+        if (dealerValue < 17) {
+          dealerHand.push(deck.pop());
+          renderHand(dealerHand, dealerHandDiv, false);
+          setTimeout(playDealer, 500);
+        } else {
+          const playerValue = getHandValue(playerHand);
+          if (dealerValue > 21) {
+            endRound('Dealer busts! You win!', 2 * currentBet);
+          } else if (dealerValue > playerValue) {
+            endRound('Dealer wins.', -currentBet);
+          } else if (playerValue > dealerValue) {
+            endRound('You win!', 2 * currentBet);
+          } else {
+            endRound('Push!', currentBet);
+          }
+        }
+      }
+      setTimeout(playDealer, 500);
+    }
+
+    // Debounce function for touch/click events
+    function debounce(func) {
+      return function (...args) {
+        const now = Date.now();
+        if (now - lastClickTime >= clickDelay) {
+          lastClickTime = now;
+          func(...args);
+        }
+      };
+    }
+
+    // Event listeners for buttons with touch support
+    startButton.addEventListener('click', debounce(() => {
+      startScreen.style.display = 'none';
+      betting.style.display = 'block';
+    }));
+    startButton.addEventListener('touchstart', debounce(() => {
+      startScreen.style.display = 'none';
+      betting.style.display = 'block';
+    }));
+
+    restartButton.addEventListener('click', debounce(() => {
+      chips = 1000;
+      updateChipsDisplay();
+      gameOverScreen.style.display = 'none';
+      betting.style.display = 'block';
+      gameState = 'betting';
+      status.textContent = '';
+    }));
+    restartButton.addEventListener('touchstart', debounce(() => {
+      chips = 1000;
+      updateChipsDisplay();
+      gameOverScreen.style.display = 'none';
+      betting.style.display = 'block';
+      gameState = 'betting';
+      status.textContent = '';
+    }));
+
+    betButtons.forEach(button => {
+      button.addEventListener('click', debounce(() => {
+        startRound(parseInt(button.dataset.amount));
+      }));
+      button.addEventListener('touchstart', debounce(() => {
+        startRound(parseInt(button.dataset.amount));
+      }));
+    });
+
+    hitButton.addEventListener('click', debounce(() => {
+      playerHand.push(deck.pop());
+      renderHand(playerHand, playerHandDiv);
+      checkPlayerHand();
+      updateButtonStates();
+    }));
+    hitButton.addEventListener('touchstart', debounce(() => {
+      playerHand.push(deck.pop());
+      renderHand(playerHand, playerHandDiv);
+      checkPlayerHand();
+      updateButtonStates();
+    }));
+
+    standButton.addEventListener('click', debounce(() => {
+      gameState = 'dealer';
+      dealerTurn();
+    }));
+    standButton.addEventListener('touchstart', debounce(() => {
+      gameState = 'dealer';
+      dealerTurn();
+    }));
+
+    doubleButton.addEventListener('click', debounce(() => {
+      chips -= currentBet;
+      currentBet *= 2;
+      updateChipsDisplay();
+      playerHand.push(deck.pop());
+      renderHand(playerHand, playerHandDiv);
+      checkPlayerHand();
+      if (gameState === 'playing') {
+        gameState = 'dealer';
+        dealerTurn();
+      }
+    }));
+    doubleButton.addEventListener('touchstart', debounce(() => {
+      chips -= currentBet;
+      currentBet *= 2;
+      updateChipsDisplay();
+      playerHand.push(deck.pop());
+      renderHand(playerHand, playerHandDiv);
+      checkPlayerHand();
+      if (gameState === 'playing') {
+        gameState = 'dealer';
+        dealerTurn();
+      }
+    }));
+
+    splitButton.addEventListener('click', debounce(() => {
+      chips -= currentBet;
+      updateChipsDisplay();
+      isSplit = true;
+      splitHand = [playerHand.pop()];
+      playerHand.push(deck.pop());
+      splitHand.push(deck.pop());
+      // Handle only one hand for simplicity
+      renderHand(playerHand, playerHandDiv);
+      checkPlayerHand();
+      updateButtonStates();
+    }));
+    splitButton.addEventListener('touchstart', debounce(() => {
+      chips -= currentBet;
+      updateChipsDisplay();
+      isSplit = true;
+      splitHand = [playerHand.pop()];
+      playerHand.push(deck.pop());
+      splitHand.push(deck.pop());
+      renderHand(playerHand, playerHandDiv);
+      checkPlayerHand();
+      updateButtonStates();
+    }));
+
+    // Keyboard navigation for pause/resume
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'p' || e.key === 'P') {
+        if (gameState === 'playing') {
+          status.textContent = 'Paused';
+          gameState = 'paused';
+        } else if (gameState === 'paused') {
+          status.textContent = `Your hand: ${getHandValue(playerHand)}`;
+          gameState = 'playing';
+        }
+        updateButtonStates();
+      }
+    });
+
+    // Prevent touchmove scrolling on game area
+    document.querySelector('.game-table').addEventListener('touchmove', (e) => {
+      e.preventDefault();
+    });
+
+    // Initialize deck
+    createDeck();
+  </script>
+</body>
+</html>
