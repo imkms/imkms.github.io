@@ -56,7 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
             
             const handInfo = document.createElement('p');
             handInfo.className = 'hand-info';
-            handInfo.textContent = `Hand ${index + 1} (Bet: ${handData.bet}) - Score: ${calculateScore(handData.cards)}`;
+            handInfo.textContent = `Hand ${index + 1} - Score: ${calculateScore(handData.cards)}`;
             if (handData.status !== 'playing') {
                 handInfo.textContent += ` - ${handData.status.toUpperCase()}`;
             }

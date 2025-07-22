@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Flappy Bird - Arcade Edition</title>
-    <link href="[https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap](https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap)" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="flpb.css">
 </head>
 <body>
@@ -17,6 +17,14 @@
             <canvas id="game-canvas"></canvas>
             <div id="config-screen" class="overlay">
                 <h2>Flappy Bird</h2>
+                <div class="config-section">
+                    <p>Difficulty:</p>
+                    <div class="config-options">
+                        <label><input type="radio" name="difficulty" value="easy"> Easy</label>
+                        <label><input type="radio" name="difficulty" value="normal" checked> Normal</label>
+                        <label><input type="radio" name="difficulty" value="hard"> Hard</label>
+                    </div>
+                </div>
                 <div class="config-section">
                     <p>Bird Skin:</p>
                     <div class="config-options">
@@ -42,7 +50,7 @@
         <div id="ui-footer">
             <a href="index.html" class="back-btn">&lt; Back to Arcade</a>
             <button id="theme-toggle">Dark Mode</button>
-            <span class="version-text">Beta v0.1</span>
+            <span class="version-text">Beta v0.2</span>
         </div>
     </div>
     <script src="flpb.js"></script>

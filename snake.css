@@ -26,7 +26,7 @@ body.dark-mode {
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: 'Press Start 2P', cursive; background-color: var(--bg-color); color: var(--text-color); display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 10px; overflow: hidden; transition: background-color 0.3s, color 0.3s; }
+body { font-family: 'VT323', cursive; background-color: var(--bg-color); color: var(--text-color); display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 10px; overflow: hidden; transition: background-color 0.3s, color 0.3s; }
 .game-wrapper { display: flex; flex-direction: column; align-items: center; width: 100%; max-width: 540px; }
 .header { width: 100%; display: flex; justify-content: space-between; font-size: 1rem; margin-bottom: 1rem; padding: 0 10px; }
 #game-area { position: relative; border: 2px solid var(--border-color); box-shadow: 4px 4px 0px var(--shadow-color); border-radius: 8px; background-color: var(--game-bg); }
@@ -34,12 +34,14 @@ body { font-family: 'Press Start 2P', cursive; background-color: var(--bg-color)
 .overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; background-color: var(--overlay-bg); border-radius: 6px; padding: 1rem; }
 .overlay h2 { font-size: 2rem; margin-bottom: 1.5rem; }
 .overlay p { font-size: 1.2rem; margin-bottom: 1.5rem; }
-.overlay button { font-family: 'Press Start 2P', cursive; font-size: 1rem; padding: 1rem 2rem; cursor: pointer; color: var(--text-color); background-color: var(--primary-accent); border: 2px solid var(--border-color); box-shadow: 4px 4px 0px var(--shadow-color); border-radius: 5px; transition: all 0.1s ease-in-out; }
+.config-section { margin-bottom: 1rem; }
+.config-section p { font-size: 1rem; margin-bottom: 0.5rem; }
+.overlay button { font-family: 'VT323', cursive; font-size: 1rem; padding: 1rem 2rem; cursor: pointer; color: var(--text-color); background-color: var(--primary-accent); border: 2px solid var(--border-color); box-shadow: 4px 4px 0px var(--shadow-color); border-radius: 5px; transition: all 0.1s ease-in-out; }
 .overlay button:active { transform: translate(2px, 2px); box-shadow: 2px 2px 0px var(--shadow-color); }
 .hidden { display: none; }
 .footer-nav { position: fixed; bottom: 10px; left: 10px; right: 10px; display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem; color: var(--text-color); }
 .back-btn { color: var(--text-color); text-decoration: none; padding: 0.5rem; }
-#theme-toggle { background: none; border: 2px solid var(--border-color); color: var(--text-color); font-family: 'Press Start 2P', cursive; cursor: pointer; padding: 0.5rem; border-radius: 5px; font-size: 0.8rem; }
+#theme-toggle { background: none; border: 2px solid var(--border-color); color: var(--text-color); font-family: 'VT323', cursive; cursor: pointer; padding: 0.5rem; border-radius: 5px; font-size: 0.8rem; }
 
 /* Mobile Controls */
 #mobile-controls {

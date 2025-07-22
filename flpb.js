@@ -16,8 +16,8 @@ const bird = {
     width: 30,
     height: 30,
     velocity: 0,
-    gravity: 0.28, // Reduced by ~30% from 0.4
-    lift: -7 // Adjusted for new gravity
+    gravity: 0.28, // Default value, will be set by difficulty
+    lift: -7 
 };
 
 const pipes = [];
@@ -56,6 +56,20 @@ function resetGame() {
 }
 
 function startGame() {
+    const difficulty = document.querySelector('input[name="difficulty"]:checked').value;
+    switch(difficulty) {
+        case 'easy':
+            bird.gravity = 0.20;
+            break;
+        case 'hard':
+            bird.gravity = 0.38;
+            break;
+        case 'normal':
+        default:
+            bird.gravity = 0.28;
+            break;
+    }
+
     selectedSkins.bird = document.querySelector('input[name="bird-skin"]:checked').value;
     selectedSkins.pipe = document.querySelector('input[name="pipe-skin"]:checked').value;
     gameState = 'PLAYING';

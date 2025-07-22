@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Snake - Arcade Edition</title>
-    <link href="[https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap](https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap)" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="snake.css">
 </head>
 <body>
@@ -16,8 +16,30 @@
         
         <div id="game-area">
             <canvas id="game-board"></canvas>
-            <div id="start-screen" class="overlay">
-                <h2>Snake</h2>
+            <div id="config-screen" class="overlay">
+                <h2>Snake Config</h2>
+                <div class="config-section">
+                    <p>Snake Style:</p>
+                    <label><input type="radio" name="snake-skin" value="boy" checked> Boy</label>
+                    <label><input type="radio" name="snake-skin" value="girl"> Girl</label>
+                </div>
+                <div class="config-section">
+                    <p>Food Style:</p>
+                    <label><input type="radio" name="food-skin" value="🍎" checked> 🍎</label>
+                    <label><input type="radio" name="food-skin" value="🍍" id="unlock-pineapple" disabled> 🍍</label>
+                    <label><input type="radio" name="food-skin" value="🍌" id="unlock-banana" disabled> 🍌</label>
+                </div>
+                <div class="config-section">
+                    <p>Food Count:</p>
+                    <select id="food-count-select">
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                    </select>
+                </div>
+                <div id="countdown-text" style="font-size: 2rem; margin-top: 1rem; height: 2rem;"></div>
                 <button id="start-game-btn">Start Game</button>
             </div>
             <div id="game-over-screen" class="overlay hidden">
@@ -39,14 +61,15 @@
     <div class="footer-nav">
         <a href="index.html" class="back-btn">&lt; Back to Arcade</a>
         <button id="theme-toggle">Dark Mode</button>
-        <span>Snake Beta v0.1</span>
+        <span>Snake Beta v0.2</span>
     </div>
     <script>
         const canvas = document.getElementById('game-board'), ctx = canvas.getContext('2d');
         const scoreEl = document.getElementById('score'), highScoreEl = document.getElementById('high-score');
-        const startScreen = document.getElementById('start-screen'), gameOverScreen = document.getElementById('game-over-screen');
+        const configScreen = document.getElementById('config-screen'), gameOverScreen = document.getElementById('game-over-screen');
         const finalScoreEl = document.getElementById('final-score'), startGameBtn = document.getElementById('start-game-btn'), playAgainBtn = document.getElementById('play-again-btn');
         const mobileControls = document.getElementById('mobile-controls');
+        const countdownText = document.getElementById('countdown-text');
 
         const gridSize = 20;
         let tileCount;
@@ -57,33 +80,101 @@
             canvas.width = canvas.height = tileCount * gridSize;
         }
 
-        const gameState = { snake: [], food: {}, direction: { x: 1, y: 0 }, nextDirection: { x: 1, y: 0 }, score: 0, status: 'PRE-GAME', gameLoop: null };
+        const gameState = { 
+            snake: [], 
+            food: [], 
+            direction: { x: 1, y: 0 }, 
+            nextDirection: { x: 1, y: 0 }, 
+            score: 0, 
+            status: 'PRE-GAME', 
+            gameLoop: null,
+            settings: {
+                snakeSkin: 'boy',
+                foodSkin: '🍎',
+                foodCount: 1
+            }
+        };
         let highScore = localStorage.getItem('snakeHighScore') || 0;
         highScoreEl.textContent = highScore;
+        let unlocks = { pineapple: false, banana: false };
 
         function getThemeColor(cssVar) { return getComputedStyle(document.documentElement).getPropertyValue(cssVar).trim(); }
 
+        function loadUnlocks() {
+            const savedUnlocks = localStorage.getItem('snakeUnlocks');
+            if (savedUnlocks) {
+                unlocks = JSON.parse(savedUnlocks);
+            }
+            document.getElementById('unlock-pineapple').disabled = !unlocks.pineapple;
+            document.getElementById('unlock-banana').disabled = !unlocks.banana;
+        }
+
+        function checkUnlocks() {
+            let updated = false;
+            if (gameState.score >= 5 && !unlocks.pineapple) {
+                unlocks.pineapple = true;
+                updated = true;
+            }
+            if (gameState.score >= 10 && !unlocks.banana) {
+                unlocks.banana = true;
+                updated = true;
+            }
+            if (updated) {
+                localStorage.setItem('snakeUnlocks', JSON.stringify(unlocks));
+                loadUnlocks();
+            }
+        }
+        
         function resetGame() {
             if (gameState.gameLoop) clearInterval(gameState.gameLoop);
             gameState.snake = [{ x: Math.floor(tileCount / 2), y: Math.floor(tileCount / 2) }];
-            gameState.direction = { x: 1, y: 0 }; gameState.nextDirection = { x: 1, y: 0 };
-            gameState.score = 0; scoreEl.textContent = 0;
-            placeFood();
+            gameState.direction = { x: 1, y: 0 }; 
+            gameState.nextDirection = { x: 1, y: 0 };
+            gameState.score = 0; 
+            scoreEl.textContent = 0;
+            gameState.food = [];
         }
 
         function startGame() {
             resetGame();
-            gameState.status = 'PLAYING';
-            startScreen.classList.add('hidden'); gameOverScreen.classList.add('hidden');
+            gameState.settings.snakeSkin = document.querySelector('input[name="snake-skin"]:checked').value;
+            gameState.settings.foodSkin = document.querySelector('input[name="food-skin"]:checked').value;
+            gameState.settings.foodCount = parseInt(document.getElementById('food-count-select').value);
+            
+            gameOverScreen.classList.add('hidden');
             canvas.style.display = 'block';
-            gameState.gameLoop = setInterval(tick, 100);
+
+            let count = 2;
+            startGameBtn.style.display = 'none';
+            countdownText.textContent = 'Get Ready!';
+
+            const countdownInterval = setInterval(() => {
+                if(count > 0) {
+                    countdownText.textContent = count + "...";
+                    count--;
+                } else {
+                    clearInterval(countdownInterval);
+                    countdownText.textContent = '';
+                    configScreen.classList.add('hidden');
+                    startGameBtn.style.display = 'block';
+                    
+                    gameState.status = 'PLAYING';
+                    placeFood();
+                    draw();
+                    gameState.gameLoop = setInterval(tick, 100);
+                }
+            }, 1000);
         }
 
         function placeFood() {
-            let newFood;
-            do { newFood = { x: Math.floor(Math.random() * tileCount), y: Math.floor(Math.random() * tileCount) }; } 
-            while (gameState.snake.some(s => s.x === newFood.x && s.y === newFood.y));
-            gameState.food = newFood;
+            gameState.food = [];
+            for (let i = 0; i < gameState.settings.foodCount; i++) {
+                let newFood;
+                do { 
+                    newFood = { x: Math.floor(Math.random() * tileCount), y: Math.floor(Math.random() * tileCount) }; 
+                } while (gameState.snake.some(s => s.x === newFood.x && s.y === newFood.y) || gameState.food.some(f => f.x === newFood.x && f.y === newFood.y));
+                gameState.food.push(newFood);
+            }
         }
 
         function tick() {
@@ -91,33 +182,63 @@
             const isOpposite = (d1, d2) => d1.x === -d2.x && d1.x !== 0 || d1.y === -d2.y && d1.y !== 0;
             if (!isOpposite(gameState.nextDirection, gameState.direction)) { gameState.direction = { ...gameState.nextDirection }; }
             const head = { x: gameState.snake[0].x + gameState.direction.x, y: gameState.snake[0].y + gameState.direction.y };
+            
             const wallCollision = head.x < 0 || head.x >= tileCount || head.y < 0 || head.y >= tileCount;
             const selfCollision = gameState.snake.slice(1).some(s => s.x === head.x && s.y === head.y);
+            
             if (wallCollision || selfCollision) {
-                gameState.status = 'GAME-OVER'; clearInterval(gameState.gameLoop);
+                gameState.status = 'GAME-OVER'; 
+                clearInterval(gameState.gameLoop);
                 finalScoreEl.textContent = gameState.score;
-                if (gameState.score > highScore) { highScore = gameState.score; localStorage.setItem('snakeHighScore', highScore); highScoreEl.textContent = highScore; }
-                gameOverScreen.classList.remove('hidden'); return;
+                if (gameState.score > highScore) { 
+                    highScore = gameState.score; 
+                    localStorage.setItem('snakeHighScore', highScore); 
+                    highScoreEl.textContent = highScore; 
+                }
+                checkUnlocks();
+                gameOverScreen.classList.remove('hidden'); 
+                return;
             }
+
             gameState.snake.unshift(head);
-            if (head.x === gameState.food.x && head.y === gameState.food.y) { gameState.score++; scoreEl.textContent = gameState.score; placeFood(); } else { gameState.snake.pop(); }
+            const foodIndex = gameState.food.findIndex(f => head.x === f.x && head.y === f.y);
+
+            if (foodIndex > -1) { 
+                gameState.score++; 
+                scoreEl.textContent = gameState.score; 
+                gameState.food.splice(foodIndex, 1);
+                if (gameState.food.length === 0) {
+                    placeFood();
+                }
+            } else { 
+                gameState.snake.pop(); 
+            }
             draw();
         }
 
         function draw() {
             ctx.fillStyle = getThemeColor('--game-bg');
             ctx.fillRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = getThemeColor('--food-color');
-            ctx.fillRect(gameState.food.x * gridSize, gameState.food.y * gridSize, gridSize - 1, gridSize - 1);
+            
+            ctx.font = `${gridSize}px sans-serif`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            gameState.food.forEach(f => {
+                ctx.fillText(gameState.settings.foodSkin, f.x * gridSize + gridSize / 2, f.y * gridSize + gridSize / 2);
+            });
+
             gameState.snake.forEach((segment, index) => {
                 ctx.fillStyle = getThemeColor(index === 0 ? '--snake-head-color' : '--snake-body-color');
                 ctx.fillRect(segment.x * gridSize, segment.y * gridSize, gridSize - 1, gridSize - 1);
+                if (index === 0 && gameState.settings.snakeSkin === 'girl') {
+                    ctx.fillStyle = 'red';
+                    ctx.fillRect(segment.x * gridSize + (gridSize / 4), segment.y * gridSize - 3, gridSize / 2, 5);
+                }
             });
         }
 
         function handleDirectionChange(newDir) { if (gameState.status === 'PLAYING') { gameState.nextDirection = newDir; } }
         
-        // --- Event Listeners ---
         window.addEventListener('keydown', (e) => {
             e.preventDefault();
             switch(e.key.toLowerCase()) {
@@ -128,10 +249,14 @@
             }
         });
         startGameBtn.addEventListener('click', startGame);
-        playAgainBtn.addEventListener('click', startGame);
+        playAgainBtn.addEventListener('click', () => {
+            gameOverScreen.classList.add('hidden');
+            configScreen.classList.remove('hidden');
+            resetGame();
+            draw();
+        });
         window.addEventListener('resize', () => { setCanvasSize(); draw(); });
 
-        // --- Mobile & Theme Setup ---
         const isMobile = 'ontouchstart' in window;
         if (isMobile) { mobileControls.classList.remove('hidden'); }
         document.getElementById('up-btn').addEventListener('touchstart', (e) => { e.preventDefault(); handleDirectionChange({ x: 0, y: -1 }); });
@@ -145,7 +270,7 @@
             const isDark = localStorage.getItem('theme') === 'dark';
             body.classList.toggle('dark-mode', isDark);
             themeToggle.textContent = isDark ? 'Light Mode' : 'Dark Mode';
-            draw();
+            if (gameState.status !== 'PLAYING') draw();
         }
         themeToggle.addEventListener('click', () => {
             const isDark = !body.classList.contains('dark-mode');
@@ -153,12 +278,13 @@
             applyTheme();
         });
 
-        // --- Initialisation ---
         setCanvasSize();
         resetGame();
+        loadUnlocks();
         applyTheme();
-        startScreen.classList.remove('hidden');
+        configScreen.classList.remove('hidden');
         canvas.style.display = 'block';
+        draw();
     </script>
 </body>
 </html>

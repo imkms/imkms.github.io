@@ -38,7 +38,7 @@ body.dark-mode {
 body {
     background-color: var(--bg-color);
     color: var(--text-color);
-    font-family: 'Press Start 2P', 'Courier New', monospace;
+    font-family: 'VT323', 'Courier New', monospace;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -171,7 +171,7 @@ header > div {
     background-color: var(--card-bg); 
     border: 2px solid var(--border-color); 
     color: var(--text-color);
-    font-family: 'Press Start 2P', monospace; 
+    font-family: 'VT323', monospace; 
     padding: 0.8rem; 
     width: 100px; 
     text-align: center;
@@ -179,7 +179,7 @@ header > div {
 }
 
 .btn {
-    font-family: 'Press Start 2P', monospace; 
+    font-family: 'VT323', monospace; 
     background: var(--primary-accent); 
     border: 2px solid var(--border-color);
     color: var(--text-color); 
@@ -219,7 +219,7 @@ header > div {
     background: none;
     border: 2px solid var(--border-color);
     color: var(--text-color);
-    font-family: 'Press Start 2P', cursive;
+    font-family: 'VT323', cursive;
     cursor: pointer;
     padding: 0.5rem 1rem;
     border-radius: 5px;
