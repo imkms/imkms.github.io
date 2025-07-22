@@ -1,119 +1,254 @@
-/* "Green Phosphor CRT" Design Specification - v1.1 */
+/* --- Light Mode (Default) --- */
 :root {
-    --main-bg: #0a0a0a;
-    --primary-color: #39FF14;
-    --highlight-color: #d1ffca;
+    --bg-color: #f4f1de;
+    --text-color: #3d405b;
+    --primary-accent: #e07a5f;
+    --secondary-accent: #81b29a;
+    --border-color: #3d405b;
+    --shadow-color: #3d405b;
+    --card-bg: #ffffff;
+    --card-back-bg: var(--secondary-accent);
+    --btn-disabled-bg: #cccccc;
+    --btn-disabled-text: #888888;
+    --btn-disabled-border: #aaaaaa;
 }
-* { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* --- Dark Mode --- */
+body.dark-mode {
+    --bg-color: #2c2f33;
+    --text-color: #e6e6e6;
+    --primary-accent: #f28c6e;
+    --secondary-accent: #8cc3a9;
+    --border-color: #e6e6e6;
+    --shadow-color: #1a1c1e;
+    --card-bg: #4a4e69;
+    --card-back-bg: var(--secondary-accent);
+    --btn-disabled-bg: #5a5a5a;
+    --btn-disabled-text: #999999;
+    --btn-disabled-border: #777777;
+}
+
+
+* { 
+    box-sizing: border-box; 
+    margin: 0; 
+    padding: 0; 
+}
+
 body {
-    background-color: var(--main-bg);
-    color: var(--primary-color);
+    background-color: var(--bg-color);
+    color: var(--text-color);
     font-family: 'Press Start 2P', 'Courier New', monospace;
-    text-transform: uppercase;
-    text-shadow: 0 0 5px var(--primary-color);
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
     padding: 20px;
-    overflow: hidden;
+    transition: background-color 0.3s, color 0.3s;
 }
-#crt-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    pointer-events: none;
-    background: repeating-linear-gradient(rgba(0,0,0,0.3) 0, rgba(0,0,0,0.3) 1px, transparent 1px, transparent 3px);
-    z-index: 9999;
-}
+
 #game-container {
     width: 100%;
     max-width: 900px;
-    border: 2px solid var(--primary-color);
+    border: 2px solid var(--border-color);
     padding: 2rem;
-    background: rgba(10, 30, 10, 0.1);
+    background: var(--bg-color);
+    box-shadow: 4px 4px 0px var(--shadow-color);
+    border-radius: 8px;
 }
+
 header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 2px solid var(--primary-color);
+    border-bottom: 2px solid var(--border-color);
     padding-bottom: 1rem;
     margin-bottom: 1rem;
 }
-header > div { display: flex; align-items: center; gap: 20px; }
-.version-text { font-size: 0.7rem; color: var(--highlight-color); }
-.back-btn { color: var(--primary-color); text-decoration: none; font-size: 0.8rem; }
+
+header > div { 
+    display: flex; 
+    align-items: baseline; 
+    gap: 20px; 
+}
+
+.version-text { 
+    font-size: 0.7rem; 
+    color: var(--secondary-accent);
+}
+
+.back-btn { 
+    color: var(--text-color); 
+    text-decoration: none; 
+    font-size: 0.8rem; 
+}
+
 #game-table {
     display: flex;
     flex-direction: column;
     gap: 2rem;
     margin-bottom: 2rem;
 }
-.area h2 { margin-bottom: 1rem; font-size: 1.2rem; }
-.player-header { display: flex; justify-content: space-between; align-items: center; }
+
+.area h2 { 
+    margin-bottom: 1rem; 
+    font-size: 1.2rem; 
+}
+
+.player-header { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+}
+
 .hand-container {
     display: flex;
     gap: 1rem;
-    min-height: 100px;
+    min-height: 125px;
     flex-wrap: wrap;
-    perspective: 1000px; /* For 3D flip effect */
+    perspective: 1000px;
 }
+
 .card {
-    width: 70px;
-    height: 95px;
+    width: 80px;
+    height: 115px;
     position: relative;
     transform-style: preserve-3d;
     transition: transform 0.6s;
 }
+
 .card-face {
     position: absolute;
     width: 100%;
     height: 100%;
     backface-visibility: hidden;
-    border: 2px solid var(--primary-color);
+    border: 2px solid var(--border-color);
+    border-radius: 6px;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 1.5rem;
+    color: var(--text-color);
 }
+
 .card-front {
-    background-color: rgba(10, 20, 10, 0.5);
+    background-color: var(--card-bg);
     transform: rotateY(180deg);
 }
+
 .card-back {
-    background: repeating-linear-gradient(45deg, var(--primary-color), var(--primary-color) 2px, transparent 2px, transparent 4px);
+    background-color: var(--card-back-bg);
 }
-#ui-area { border-top: 2px solid var(--primary-color); padding-top: 1rem; }
-#game-messages { min-height: 2.5em; margin-bottom: 1rem; font-size: 1.1rem; color: var(--highlight-color); }
-#ui-controls { display: flex; justify-content: center; gap: 1rem; margin-bottom: 1rem; }
-#betting-controls { display: flex; align-items: center; gap: 10px; }
+
+#ui-area { 
+    border-top: 2px solid var(--border-color); 
+    padding-top: 1rem; 
+}
+
+#game-messages { 
+    min-height: 2.5em; 
+    margin-bottom: 1rem; 
+    font-size: 1.1rem; 
+    color: var(--text-color);
+    text-align: center;
+}
+
+#ui-controls { 
+    display: flex; 
+    justify-content: center; 
+    gap: 1rem; 
+    margin-bottom: 1rem; 
+    flex-wrap: wrap;
+}
+
+#betting-controls { 
+    display: flex; 
+    align-items: center; 
+    gap: 10px; 
+}
+
 #bet-amount {
-    background-color: transparent; border: 2px solid var(--primary-color); color: var(--highlight-color);
-    font-family: 'Press Start 2P', monospace; padding: 0.8rem; width: 100px; text-align: center;
+    background-color: var(--card-bg); 
+    border: 2px solid var(--border-color); 
+    color: var(--text-color);
+    font-family: 'Press Start 2P', monospace; 
+    padding: 0.8rem; 
+    width: 100px; 
+    text-align: center;
+    border-radius: 5px;
 }
+
 .btn {
-    font-family: 'Press Start 2P', monospace; background: transparent; border: 2px solid var(--primary-color);
-    color: var(--primary-color); padding: 0.8rem 1.2rem; cursor: pointer;
-    text-shadow: 0 0 5px var(--primary-color); transition: transform 0.1s, filter 0.1s;
+    font-family: 'Press Start 2P', monospace; 
+    background: var(--primary-accent); 
+    border: 2px solid var(--border-color);
+    color: var(--text-color); 
+    padding: 0.8rem 1.2rem; 
+    cursor: pointer;
+    box-shadow: 4px 4px 0px var(--shadow-color);
+    border-radius: 5px;
+    transition: all 0.1s ease-in-out;
 }
-.btn:hover:not(:disabled) { filter: brightness(1.2); }
-.btn:active:not(:disabled) { transform: scale(0.97); filter: brightness(1.5); }
-.btn:disabled { color: #2a6320; border-color: #2a6320; text-shadow: none; cursor: not-allowed; }
-#bet-info { text-align: center; color: var(--highlight-color); font-size: 0.9rem; }
-.hidden { display: none !important; }
-/* NEW: ANIMATION CLASSES */
-.card.is-flipped { transform: rotateY(180deg); }
-.card.newly-dealt { animation: deal-card 0.4s ease-out; }
-#game-messages.new-message { animation: pulse-glow 0.8s ease-in-out; }
+
+.btn:active:not(:disabled) {
+    transform: translate(2px, 2px);
+    box-shadow: 2px 2px 0px var(--shadow-color);
+}
+
+.btn:disabled { 
+    background-color: var(--btn-disabled-bg);
+    color: var(--btn-disabled-text);
+    border-color: var(--btn-disabled-border);
+    box-shadow: 2px 2px 0px var(--btn-disabled-border);
+    cursor: not-allowed; 
+}
+
+#bet-info { 
+    text-align: center; 
+    color: var(--text-color); 
+    font-size: 0.9rem; 
+}
+
+.footer-controls {
+    margin-top: 2rem;
+    display: flex;
+    justify-content: center;
+}
+
+#theme-toggle {
+    background: none;
+    border: 2px solid var(--border-color);
+    color: var(--text-color);
+    font-family: 'Press Start 2P', cursive;
+    cursor: pointer;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+}
+
+.hidden { 
+    display: none !important; 
+}
+
+/* Animations */
+.card.is-flipped { 
+    transform: rotateY(180deg); 
+}
+
+.card.newly-dealt { 
+    animation: deal-card 0.4s ease-out; 
+}
+
+#game-messages.new-message { 
+    animation: pulse-text 0.8s ease-in-out; 
+}
+
 @keyframes deal-card {
     from { transform: translate(-30vw, -50vh) scale(0.1) rotateY(180deg); opacity: 0; }
     to { transform: translate(0, 0) scale(1) rotateY(180deg); opacity: 1; }
 }
-@keyframes pulse-glow {
-    0% { text-shadow: 0 0 5px var(--primary-color); }
-    50% { text-shadow: 0 0 15px var(--highlight-color); }
-    100% { text-shadow: 0 0 5px var(--primary-color); }
+
+@keyframes pulse-text {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); color: var(--primary-accent); }
+    100% { transform: scale(1); }
 }

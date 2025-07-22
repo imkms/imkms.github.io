@@ -1,0 +1,55 @@
+/* --- Light Mode (Default) --- */
+:root {
+    --bg-color: #f4f1de;
+    --text-color: #3d405b;
+    --primary-accent: #e07a5f;
+    --border-color: #3d405b;
+    --shadow-color: #3d405b;
+    --overlay-bg: rgba(244, 241, 222, 0.85);
+    /* Game-specific colors */
+    --canvas-bg: #d6e2f0;
+    /* Skin Colors */
+    --bird-color-classic: #f2c34e;
+    --bird-color-retro: #4e8af2;
+    --pipe-color-classic: #81b29a;
+    --pipe-color-industrial: #8d99ae;
+}
+
+/* --- Dark Mode --- */
+body.dark-mode {
+    --bg-color: #2c2f33;
+    --text-color: #e6e6e6;
+    --primary-accent: #f28c6e;
+    --border-color: #e6e6e6;
+    --shadow-color: #1a1c1e;
+    --overlay-bg: rgba(44, 47, 51, 0.85);
+    /* Game-specific colors */
+    --canvas-bg: #4a4e69;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+    font-family: 'Press Start 2P', cursive;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 10px;
+    transition: background-color 0.3s, color 0.3s;
+}
+#game-container { width: 100%; max-width: 400px; display: flex; flex-direction: column; gap: 1rem; }
+#ui-header, #ui-footer { display: flex; justify-content: space-between; align-items: center; padding: 0 0.5rem; }
+.version-text, .back-btn { font-size: 0.8rem; color: var(--text-color); text-decoration: none; }
+#canvas-wrapper { position: relative; border: 2px solid var(--border-color); box-shadow: 4px 4px 0px var(--shadow-color); border-radius: 8px; background-color: var(--canvas-bg); overflow: hidden; }
+#game-canvas { display: block; width: 100%; }
+.overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; background-color: var(--overlay-bg); padding: 1rem; border-radius: 6px; }
+.overlay h2 { font-size: 2rem; margin-bottom: 1.5rem; }
+.overlay p { font-size: 1rem; margin-bottom: 1rem; line-height: 1.5; }
+.config-section { margin-bottom: 1rem; }
+.config-options { display: flex; gap: 1rem; justify-content: center; }
+.overlay button, #theme-toggle { font-family: 'Press Start 2P', cursive; font-size: 1rem; padding: 1rem 1.5rem; cursor: pointer; color: var(--text-color); background-color: var(--primary-accent); border: 2px solid var(--border-color); box-shadow: 4px 4px 0px var(--shadow-color); border-radius: 5px; transition: all 0.1s ease-in-out; }
+.overlay button:active, #theme-toggle:active { transform: translate(2px, 2px); box-shadow: 2px 2px 0px var(--shadow-color); }
+#theme-toggle { padding: 0.5rem; font-size: 0.8rem; background: none; }
+.hidden { display: none !important; }

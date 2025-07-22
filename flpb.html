@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Flappy Bird - Arcade Edition</title>
+    <link href="[https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap](https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap)" rel="stylesheet">
+    <link rel="stylesheet" href="flpb.css">
+</head>
+<body>
+    <div id="game-container">
+        <div id="ui-header">
+            <span>Score: <span id="score">0</span></span>
+            <span>High Score: <span id="high-score">0</span></span>
+        </div>
+        <div id="canvas-wrapper">
+            <canvas id="game-canvas"></canvas>
+            <div id="config-screen" class="overlay">
+                <h2>Flappy Bird</h2>
+                <div class="config-section">
+                    <p>Bird Skin:</p>
+                    <div class="config-options">
+                        <label><input type="radio" name="bird-skin" value="classic" checked> Classic</label>
+                        <label><input type="radio" name="bird-skin" value="retro"> Retro</label>
+                    </div>
+                </div>
+                <div class="config-section">
+                    <p>Pipe Skin:</p>
+                    <div class="config-options">
+                        <label><input type="radio" name="pipe-skin" value="classic" checked> Classic</label>
+                        <label><input type="radio" name="pipe-skin" value="industrial"> Industrial</label>
+                    </div>
+                </div>
+                <button id="start-game-btn">Start Game</button>
+            </div>
+            <div id="game-over-screen" class="overlay hidden">
+                <h2>Game Over</h2>
+                <p>Final Score: <span id="final-score">0</span></p>
+                <button id="play-again-btn">Play Again</button>
+            </div>
+        </div>
+        <div id="ui-footer">
+            <a href="index.html" class="back-btn">&lt; Back to Arcade</a>
+            <button id="theme-toggle">Dark Mode</button>
+            <span class="version-text">Beta v0.1</span>
+        </div>
+    </div>
+    <script src="flpb.js"></script>
+    <script>
+        // --- Persistent Dark Mode Script ---
+        const themeToggle = document.getElementById('theme-toggle');
+        const body = document.body;
+
+        function applyTheme() {
+            const isDark = localStorage.getItem('theme') === 'dark';
+            body.classList.toggle('dark-mode', isDark);
+            themeToggle.textContent = isDark ? 'Light Mode' : 'Dark Mode';
+        }
+
+        themeToggle.addEventListener('click', () => {
+            const isDark = !body.classList.contains('dark-mode');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            applyTheme();
+        });
+        
+        applyTheme();
+    </script>
+</body>
+</html>
