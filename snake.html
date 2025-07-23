@@ -13,7 +13,7 @@
             <span>Score: <span id="score">0</span></span>
             <span>High Score: <span id="high-score">0</span></span>
         </div>
-        
+
         <div id="game-area">
             <canvas id="game-board"></canvas>
             <div id="config-screen" class="overlay">
@@ -61,7 +61,7 @@
     <div class="footer-nav">
         <a href="index.html" class="back-btn">&lt; Back to Arcade</a>
         <button id="theme-toggle">Dark Mode</button>
-        <span>Snake Beta v0.2</span>
+        <span>Snake Beta v0.3</span>
     </div>
     <script>
         const canvas = document.getElementById('game-board'), ctx = canvas.getContext('2d');
@@ -80,13 +80,13 @@
             canvas.width = canvas.height = tileCount * gridSize;
         }
 
-        const gameState = { 
-            snake: [], 
-            food: [], 
-            direction: { x: 1, y: 0 }, 
-            nextDirection: { x: 1, y: 0 }, 
-            score: 0, 
-            status: 'PRE-GAME', 
+        const gameState = {
+            snake: [],
+            food: [],
+            direction: { x: 1, y: 0 },
+            nextDirection: { x: 1, y: 0 },
+            score: 0,
+            status: 'PRE-GAME',
             gameLoop: null,
             settings: {
                 snakeSkin: 'boy',
@@ -124,13 +124,13 @@
                 loadUnlocks();
             }
         }
-        
+
         function resetGame() {
             if (gameState.gameLoop) clearInterval(gameState.gameLoop);
             gameState.snake = [{ x: Math.floor(tileCount / 2), y: Math.floor(tileCount / 2) }];
-            gameState.direction = { x: 1, y: 0 }; 
+            gameState.direction = { x: 1, y: 0 };
             gameState.nextDirection = { x: 1, y: 0 };
-            gameState.score = 0; 
+            gameState.score = 0;
             scoreEl.textContent = 0;
             gameState.food = [];
         }
@@ -140,7 +140,7 @@
             gameState.settings.snakeSkin = document.querySelector('input[name="snake-skin"]:checked').value;
             gameState.settings.foodSkin = document.querySelector('input[name="food-skin"]:checked').value;
             gameState.settings.foodCount = parseInt(document.getElementById('food-count-select').value);
-            
+
             gameOverScreen.classList.add('hidden');
             canvas.style.display = 'block';
 
@@ -157,7 +157,7 @@
                     countdownText.textContent = '';
                     configScreen.classList.add('hidden');
                     startGameBtn.style.display = 'block';
-                    
+
                     gameState.status = 'PLAYING';
                     placeFood();
                     draw();
@@ -170,8 +170,8 @@
             gameState.food = [];
             for (let i = 0; i < gameState.settings.foodCount; i++) {
                 let newFood;
-                do { 
-                    newFood = { x: Math.floor(Math.random() * tileCount), y: Math.floor(Math.random() * tileCount) }; 
+                do {
+                    newFood = { x: Math.floor(Math.random() * tileCount), y: Math.floor(Math.random() * tileCount) };
                 } while (gameState.snake.some(s => s.x === newFood.x && s.y === newFood.y) || gameState.food.some(f => f.x === newFood.x && f.y === newFood.y));
                 gameState.food.push(newFood);
             }
@@ -182,36 +182,41 @@
             const isOpposite = (d1, d2) => d1.x === -d2.x && d1.x !== 0 || d1.y === -d2.y && d1.y !== 0;
             if (!isOpposite(gameState.nextDirection, gameState.direction)) { gameState.direction = { ...gameState.nextDirection }; }
             const head = { x: gameState.snake[0].x + gameState.direction.x, y: gameState.snake[0].y + gameState.direction.y };
-            
+
             const wallCollision = head.x < 0 || head.x >= tileCount || head.y < 0 || head.y >= tileCount;
             const selfCollision = gameState.snake.slice(1).some(s => s.x === head.x && s.y === head.y);
-            
+
             if (wallCollision || selfCollision) {
-                gameState.status = 'GAME-OVER'; 
+                gameState.status = 'GAME-OVER';
                 clearInterval(gameState.gameLoop);
                 finalScoreEl.textContent = gameState.score;
-                if (gameState.score > highScore) { 
-                    highScore = gameState.score; 
-                    localStorage.setItem('snakeHighScore', highScore); 
-                    highScoreEl.textContent = highScore; 
+                if (gameState.score > highScore) {
+                    highScore = gameState.score;
+                    localStorage.setItem('snakeHighScore', highScore);
+                    highScoreEl.textContent = highScore;
                 }
                 checkUnlocks();
-                gameOverScreen.classList.remove('hidden'); 
+                gameOverScreen.classList.remove('hidden');
                 return;
             }
 
             gameState.snake.unshift(head);
             const foodIndex = gameState.food.findIndex(f => head.x === f.x && head.y === f.y);
 
-            if (foodIndex > -1) { 
-                gameState.score++; 
-                scoreEl.textContent = gameState.score; 
+            if (foodIndex > -1) {
+                gameState.score++;
+                scoreEl.textContent = gameState.score;
                 gameState.food.splice(foodIndex, 1);
-                if (gameState.food.length === 0) {
-                    placeFood();
-                }
-            } else { 
-                gameState.snake.pop(); 
+
+                // Spawn a new food item immediately
+                let newFood;
+                do {
+                    newFood = { x: Math.floor(Math.random() * tileCount), y: Math.floor(Math.random() * tileCount) };
+                } while (gameState.snake.some(s => s.x === newFood.x && s.y === newFood.y) || gameState.food.some(f => f.x === newFood.x && f.y === newFood.y));
+                gameState.food.push(newFood);
+
+            } else {
+                gameState.snake.pop();
             }
             draw();
         }
@@ -219,7 +224,7 @@
         function draw() {
             ctx.fillStyle = getThemeColor('--game-bg');
             ctx.fillRect(0, 0, canvas.width, canvas.height);
-            
+
             ctx.font = `${gridSize}px sans-serif`;
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
@@ -238,7 +243,7 @@
         }
 
         function handleDirectionChange(newDir) { if (gameState.status === 'PLAYING') { gameState.nextDirection = newDir; } }
-        
+
         window.addEventListener('keydown', (e) => {
             e.preventDefault();
             switch(e.key.toLowerCase()) {

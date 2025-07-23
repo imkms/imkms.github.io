@@ -1,72 +1,62 @@
-/* --- Light Mode (Default) --- */
 :root {
-    --bg-color: #f4f1de;
-    --text-color: #3d405b;
-    --primary-accent: #e07a5f;
-    --border-color: #3d405b;
-    --shadow-color: #3d405b;
-    --overlay-bg: #f4f1de;
-    --game-bg: var(--bg-color);
-    --food-color: var(--primary-accent);
-    --snake-head-color: #3d405b;
-    --snake-body-color: #81b29a;
+    --bg-color: #f4f1de; --text-color: #3d405b; --primary-accent: #e07a5f;
+    --border-color: #3d405b; --shadow-color: #3d405b; --overlay-bg: #f4f1de;
+    --game-bg: var(--bg-color); --food-color: var(--primary-accent);
+    --snake-head-color: #3d405b; --snake-body-color: #81b29a;
 }
-/* --- Dark Mode --- */
 body.dark-mode {
-    --bg-color: #2c2f33;
-    --text-color: #e6e6e6;
-    --primary-accent: #f28c6e;
-    --border-color: #e6e6e6;
-    --shadow-color: #1a1c1e;
-    --overlay-bg: #2c2f33;
-    --game-bg: var(--bg-color);
-    --food-color: var(--primary-accent);
-    --snake-head-color: #e6e6e6;
-    --snake-body-color: #8cc3a9;
+    --bg-color: #2c2f33; --text-color: #e6e6e6; --primary-accent: #f28c6e;
+    --border-color: #e6e6e6; --shadow-color: #1a1c1e; --overlay-bg: #2c2f33;
+    --game-bg: var(--bg-color); --food-color: var(--primary-accent);
+    --snake-head-color: #e6e6e6; --snake-body-color: #8cc3a9;
 }
-
 * { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: 'VT323', cursive; background-color: var(--bg-color); color: var(--text-color); display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 10px; overflow: hidden; transition: background-color 0.3s, color 0.3s; }
+body {
+    font-family: 'VT323', monospace; background-color: var(--bg-color); color: var(--text-color);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    min-height: 100vh; padding: 10px; overflow: hidden;
+    transition: background-color 0.3s, color 0.3s;
+}
 .game-wrapper { display: flex; flex-direction: column; align-items: center; width: 100%; max-width: 540px; }
-.header { width: 100%; display: flex; justify-content: space-between; font-size: 1rem; margin-bottom: 1rem; padding: 0 10px; }
-#game-area { position: relative; border: 2px solid var(--border-color); box-shadow: 4px 4px 0px var(--shadow-color); border-radius: 8px; background-color: var(--game-bg); }
+.header { width: 100%; display: flex; justify-content: space-between; font-size: 1.2rem; margin-bottom: 1rem; padding: 0 10px; }
+#game-area {
+    position: relative; border: 2px solid var(--border-color);
+    box-shadow: 4px 4px 0px var(--shadow-color); border-radius: 8px; background-color: var(--game-bg);
+}
 #game-board { display: block; border-radius: 6px; }
-.overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; background-color: var(--overlay-bg); border-radius: 6px; padding: 1rem; }
-.overlay h2 { font-size: 2rem; margin-bottom: 1.5rem; }
+.overlay {
+    position: absolute; top: 0; left: 0; right: 0; bottom: 0; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; text-align: center;
+    background-color: var(--overlay-bg); border-radius: 6px; padding: 1rem;
+}
+.overlay h2 { font-size: 2.5rem; margin-bottom: 1.5rem; }
 .overlay p { font-size: 1.2rem; margin-bottom: 1.5rem; }
-.config-section { margin-bottom: 1rem; }
-.config-section p { font-size: 1rem; margin-bottom: 0.5rem; }
-.overlay button { font-family: 'VT323', cursive; font-size: 1rem; padding: 1rem 2rem; cursor: pointer; color: var(--text-color); background-color: var(--primary-accent); border: 2px solid var(--border-color); box-shadow: 4px 4px 0px var(--shadow-color); border-radius: 5px; transition: all 0.1s ease-in-out; }
+.config-grid { display: flex; flex-direction: column; gap: 1rem; align-items: center; margin-bottom: 1rem; }
+.config-grid p { font-size: 1.2rem; margin: 0; }
+.config-grid .options { display: flex; gap: 1.5rem; font-size: 1rem; }
+#countdown-text { font-size: 2rem; color: var(--primary-accent); transition: height 0.3s; }
+.overlay button {
+    font-family: 'VT323', monospace; font-size: 1.2rem; padding: 1rem 2rem; cursor: pointer;
+    color: var(--text-color); background-color: var(--primary-accent); border: 2px solid var(--border-color);
+    box-shadow: 4px 4px 0px var(--shadow-color); border-radius: 5px; transition: all 0.1s ease-in-out;
+}
 .overlay button:active { transform: translate(2px, 2px); box-shadow: 2px 2px 0px var(--shadow-color); }
-.hidden { display: none; }
-.footer-nav { position: fixed; bottom: 10px; left: 10px; right: 10px; display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem; color: var(--text-color); }
-.back-btn { color: var(--text-color); text-decoration: none; padding: 0.5rem; }
-#theme-toggle { background: none; border: 2px solid var(--border-color); color: var(--text-color); font-family: 'VT323', cursive; cursor: pointer; padding: 0.5rem; border-radius: 5px; font-size: 0.8rem; }
-
-/* Mobile Controls */
-#mobile-controls {
-    margin-top: 1rem;
-    width: 180px;
-    height: 120px;
+.hidden { display: none !important; }
+.footer-nav {
+    position: fixed; bottom: 10px; left: 10px; right: 10px; display: flex;
+    justify-content: space-between; align-items: center; font-size: 0.8rem;
 }
-.d-pad {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    grid-template-rows: 1fr 1fr;
-    gap: 5px;
-    width: 100%;
-    height: 100%;
+.back-btn { color: var(--text-color); text-decoration: none; padding: 0.5rem; font-size: 1rem; }
+#theme-toggle {
+    background: none; border: 2px solid var(--border-color); color: var(--text-color);
+    font-family: 'VT323', monospace; cursor: pointer; padding: 0.5rem;
+    border-radius: 5px; font-size: 1rem;
 }
+#mobile-controls { margin-top: 1rem; width: 180px; height: 120px; }
+.d-pad { display: grid; grid-template-columns: 1fr 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 5px; width: 100%; height: 100%; }
 .ctrl-btn {
-    background-color: var(--primary-accent);
-    border: 2px solid var(--border-color);
-    color: var(--text-color);
-    font-size: 1.5rem;
-    border-radius: 8px;
-    user-select: none;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    background-color: var(--primary-accent); border: 2px solid var(--border-color); color: var(--text-color);
+    font-size: 1.5rem; border-radius: 8px; user-select: none; display: flex; align-items: center; justify-content: center;
 }
 #up-btn { grid-column: 2 / 3; grid-row: 1 / 2; }
 #left-btn { grid-column: 1 / 2; grid-row: 2 / 3; }
